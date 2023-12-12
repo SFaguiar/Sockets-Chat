@@ -20,7 +20,7 @@ client.connect((IP_SERVIDOR, PORTA_SERVIDOR))
 
 
 # Função para receber mensagens do servidor
-def receive():
+def receive() -> None:
     while True:
         try:
             # Se receber a palavra-chave 'NICK', enviar o apelido selecionado
@@ -38,7 +38,7 @@ def receive():
 
 
 # Função para enviar mensagens para o servidor
-def write():
+def write() -> None:
     while True:
         message = input("[CLIENTE] Digite sua mensagem: ")
         client.send(message.encode(CHAR_SET))

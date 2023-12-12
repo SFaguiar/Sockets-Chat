@@ -8,7 +8,7 @@ import socket
 import threading
 
 class User:
-    def __init__(self, nickname, client):
+    def __init__(self, nickname: str, client: socket.socket) -> None:
         self.client = client
         self.nickname = nickname
         
@@ -28,12 +28,12 @@ print(f"[LOG] SERVIDOR INICIADO EM {SERVER_IP}.")
 users = []
 
 # Função para enviar mensagens para todos os clientes
-def broadcast(message):
+def broadcast(message:bytes) -> None:
     for user in users:
         user.client.send(message)
 
 # Função para tratar os clientes
-def handle(user):
+def handle(user: User) -> None:
     while True:
         try:
             # Enviar mensagens para todos os clientes se houverem mensagens para enviar
@@ -50,11 +50,11 @@ def handle(user):
 
 
 # Função para receber mensagens e enviar para todos os clientes (método "main")
-def receive():
+def receive() -> None:
     while True:
         # Aceitar conexões de clientes
         client, address = server.accept()
-        print(f"[LOG] Conexão de {str(address)}.")
+        print(f"[SERVER] Conexão de {str(address)}.")
 
         # Enviar mensagem de boas vindas e pedir o nickname do cliente
         client.send('NICK'.encode(CHAR_SET))
@@ -63,7 +63,7 @@ def receive():
         users.append(user)
 
         # Imprimir o nickname do cliente e notificar conexão
-        print(f"[LOG] O apelido de {address} é {nickname}.")
+        print(f"[SERVER] O apelido de {address} é {nickname}.")
         broadcast(f"[SERVIDOR] {nickname} se juntou ao chat!".encode())
 
         # Dar boas-vindas (TO DO: ferramenta para mudar as boas vindas).
