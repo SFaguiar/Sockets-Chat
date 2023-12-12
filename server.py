@@ -7,6 +7,12 @@ Início: 25/11/2023
 import socket
 import threading
 
+class User:
+    def __init__(self, nickname, client):
+        self.client = client
+        self.nickname = nickname
+        
+
 # Constantes para a criação do servidor
 PORT = 1945
 SERVER_IP = socket.gethostbyname(socket.gethostname())
@@ -16,35 +22,30 @@ CHAR_SET = 'utf-8'
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(("", PORT))
 server.listen()
-
-# Lista de clientes e nicknames:
-clients = []
-nicknames = []
-
 print(f"[LOG] SERVIDOR INICIADO EM {SERVER_IP}.")
 
+# Lista de clientes e nicknames:
+users = []
 
 # Função para enviar mensagens para todos os clientes
 def broadcast(message):
-    for client in clients:
-        client.send(message)
-
+    for user in users:
+        user.client.send(message)
 
 # Função para tratar os clientes
-def handle(client):
+def handle(user):
     while True:
         try:
             # Enviar mensagens para todos os clientes se houverem mensagens para enviar
-            message = client.recv(1024)
+            message = user.client.recv(1024)
+            message = f"[{user.nickname}]: {message.decode(CHAR_SET)}".encode(CHAR_SET)
             broadcast(message)
         except:
             # Remover cliente e nickname quando o cliente desconectar
-            index = clients.index(client)
-            clients.remove(client)
-            client.close()
-            nickname = nicknames[index]
+            nickname = user.nickname
+            users.remove(user)
+            user.client.close()
             broadcast(f'{nickname} saiu!'.encode(CHAR_SET))
-            nicknames.remove(nickname)
             break
 
 
@@ -58,8 +59,8 @@ def receive():
         # Enviar mensagem de boas vindas e pedir o nickname do cliente
         client.send('NICK'.encode(CHAR_SET))
         nickname = client.recv(1024).decode(CHAR_SET)
-        nicknames.append(nickname)
-        clients.append(client)
+        user = User(nickname, client)
+        users.append(user)
 
         # Imprimir o nickname do cliente e notificar conexão
         print(f"[LOG] O apelido de {address} é {nickname}.")
@@ -69,7 +70,7 @@ def receive():
         client.send('[SERVIDOR] Você se conectou ao servidor!'.encode(CHAR_SET))
 
         # Iniciar thread para tratar o cliente
-        thread = threading.Thread(target=handle, args=(client,))
+        thread = threading.Thread(target=handle, args=(user,))
         thread.start()
 
 

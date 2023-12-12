@@ -40,8 +40,7 @@ def receive():
 # Função para enviar mensagens para o servidor
 def write():
     while True:
-        message = f"[{nickname}]: {input('')}"
-        print(message)
+        message = input("[CLIENTE] Digite sua mensagem: ")
         client.send(message.encode(CHAR_SET))
 
 
