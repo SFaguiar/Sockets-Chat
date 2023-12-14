@@ -86,7 +86,7 @@ def receive() -> None:
 
         # Imprimir o nickname do cliente e notificar conexão
         print(f"[SERVER] O apelido de {address} é {nickname}.")
-        broadcast(f"[SERVIDOR] {nickname} se juntou ao chat!")
+        broadcast(f"[SERVIDOR] {nickname} se juntou ao chat! \n")
 
         # Dar boas-vindas (TO DO: ferramenta para mudar as boas vindas).
 
