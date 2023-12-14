@@ -7,8 +7,6 @@ Início: 25/11/2023
 import socket
 import threading
 import rsa
-import sys
-import time
 import tkinter
 import tkinter.scrolledtext
 from tkinter import simpledialog
